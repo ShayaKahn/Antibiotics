@@ -83,7 +83,7 @@ def correlation_plot_recovery(baseline_cohort, ABX_cohort, follow_up_list, chang
         if change:
             fig.update_xaxes(title_text='Δ Species richness', title_font=latex_font)
         else:
-            fig.update_xaxes(title_text='Species richness at ABX state', title_font=latex_font)
+            fig.update_xaxes(title_text='Species richness', title_font=latex_font)
     return fig
 
 follow_up_list_last = [np.array(rel_abund_rarefied_180_appear_4[0, :]),
@@ -103,6 +103,10 @@ fig_11 = correlation_plot_recovery(baseline_rel_abund_rarefied_appear_4, rel_abu
                                    follow_up_list_last, change=True)
 fig_12 = correlation_plot_recovery(baseline_rel_abund_rarefied_appear_4, rel_abund_rarefied_4,
                                    follow_up_list_last, change=True, survived=True)
+
+fig_10.show()
+fig_11.show()
+fig_12.show()
 
 # Calculate lists of the species richness at baseline, follow-up and ABX
 num_species_base_recovery = [species_richness(smp) for smp in baseline_rel_abund_rarefied_appear_4]

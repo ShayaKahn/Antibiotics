@@ -150,3 +150,6 @@ def corr_graphs(baseline_cohort, ABX_cohort, follow_up_list, method='change'):
 fig_1 = corr_graphs(placebo_data_v2, placebo_data_v3, follow_up_list, method='change')
 fig_2 = corr_graphs(placebo_data_v2, placebo_data_v3, follow_up_list, method='richness')
 fig_3 = corr_graphs(placebo_data_v2, placebo_data_v3, follow_up_list, method='survived')
+fig_1.show()
+fig_2.show()
+fig_3.show()
