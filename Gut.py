@@ -106,44 +106,6 @@ follow_up_list = [placebo_data_v5[0, :], placebo_data_v5[1, :], placebo_data_v5[
                   placebo_data_v5[30, :], placebo_data_v5[31, :], placebo_data_v5[32, :],
                   placebo_data_v5[33, :], placebo_data_v5[34, :]]
 
-from scipy.spatial.distance import braycurtis, jensenshannon
-from scipy.stats import pearsonr
-
-
-def permutation_test(x, y, n_permutations=10000):
-    observed_corr, _ = pearsonr(x, y)
-    permuted_corrs = np.zeros(n_permutations)
-
-    for i in range(n_permutations):
-        y_permuted = np.random.permutation(y)
-        permuted_corrs[i], _ = pearsonr(x, y_permuted)
-
-    p_value = np.sum(np.abs(permuted_corrs) >= np.abs(observed_corr)) / n_permutations
-    return p_value
-
-
-def partial_correlation(x, y, z):
-    # Step 1: Fit a linear regression model for x and z, and find the residuals
-    coef_xz = np.polyfit(z, x, 1)
-    residuals_x = x - np.polyval(coef_xz, z)
-
-    # Step 2: Fit a linear regression model for y and z, and find the residuals
-    coef_yz = np.polyfit(z, y, 1)
-    residuals_y = y - np.polyval(coef_yz, z)
-
-    # Step 3: Calculate the correlation between the residuals
-    partial_corr, _ = pearsonr(residuals_x, residuals_y)
-
-    return partial_corr
-
-
-def calculate_correlation(list1, list2):
-    # Calculate Pearson correlation
-    corr_coefficient, p_value = pearsonr(list1, list2)
-
-    return corr_coefficient, p_value
-
-
 def corr_graphs(baseline_cohort, ABX_cohort, follow_up_list, method='change'):
     """
     baseline_cohort: numpy matrix, each row is the baseline sample of a subject
