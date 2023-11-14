@@ -104,10 +104,6 @@ fig_11 = correlation_plot_recovery(baseline_rel_abund_rarefied_appear_4, rel_abu
 fig_12 = correlation_plot_recovery(baseline_rel_abund_rarefied_appear_4, rel_abund_rarefied_4,
                                    follow_up_list_last, change=True, survived=True)
 
-fig_10.show()
-fig_11.show()
-fig_12.show()
-
 # Calculate lists of the species richness at baseline, follow-up and ABX
 num_species_base_recovery = [species_richness(smp) for smp in baseline_rel_abund_rarefied_appear_4]
 num_species_follow_recovery = [species_richness(smp) for smp in rel_abund_rarefied_180_appear_4]
