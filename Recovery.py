@@ -2,6 +2,7 @@ from data import *
 from EranElinav import recovery, create_recovery_plot, calc_distance, species_richness,\
     num_survived_species
 import plotly.graph_objects as go
+from scipy.stats import pearsonr
 
 recovery_baseline_samples_list = [[baseline_rel_abund_rarefied[0, :]],
                                   [baseline_rel_abund_rarefied[1, :]],
@@ -39,7 +40,7 @@ fig_9 = recovery(recovery_baseline_samples_list, subject_12_samples, labels=labe
                  title='Subject 9 recovery', index=11)
 
 # Correlation plot function
-def correlation_plot_recovery(baseline_cohort, ABX_cohort, follow_up_list, change=False, survived=False):
+def correlation_plot_recovery(baseline_cohort, ABX_cohort, follow_up_list, method='change'):
     """
     baseline_cohort: numpy matrix, each row is the baseline sample of a subject
     ABX_cohort: numpy matrix, each row is the ABX sample of a subject
@@ -60,31 +61,36 @@ def correlation_plot_recovery(baseline_cohort, ABX_cohort, follow_up_list, chang
 
         D_vals.append(follow_to_baseline_distance)
 
-        if survived:
+        if method == 'survived':
             SR.append(num_survived_species([base, abx]))
-        else:
-            if change:
-                SR.append(species_richness(abx) - species_richness(base))
-            else:
-                SR.append(species_richness(abx))
+        elif method == 'richness':
+            SR.append(species_richness(abx))
+        elif method == 'change':
+            SR.append(species_richness(abx) - species_richness(base))
+        elif method == 'fraction':
+            SR.append(species_richness(abx)/species_richness(base))
 
     latex_font = {"family": "serif", "size": 30, "color": "black"}
-    fig = go.Figure(data=go.Scatter(x=SR, y=D_vals, mode='markers', marker=dict(size=20)))
-    fig.update_layout(height=600, width=600)
+    fig = go.Figure(data=go.Scatter(x=SR, y=D_vals, mode='markers', marker=dict(color='black', size=15)))
+    fig.update_layout(height=600, width=600, plot_bgcolor='white')
     fig.update_layout(showlegend=False)
     fig.update_xaxes(showline=True, zeroline=False, linecolor='black', showgrid=False,
                      tickfont=dict(size=20))
     fig.update_yaxes(showline=True, zeroline=False, linecolor='black', showgrid=False,
                      tickfont=dict(size=20))
     fig.update_yaxes(title_text='Bray Curtis', title_font=latex_font)
-    if survived:
+    if method == 'survived':
         fig.update_xaxes(title_text='Survived species', title_font=latex_font)
-    else:
-        if change:
-            fig.update_xaxes(title_text='Δ Species richness', title_font=latex_font)
-        else:
-            fig.update_xaxes(title_text='Species richness', title_font=latex_font)
-    return fig
+    elif method == 'change':
+        fig.update_xaxes(title_text='Δ Species richness', title_font=latex_font)
+    elif method == 'richness':
+        fig.update_xaxes(title_text='Species richness', title_font=latex_font)
+    elif method == 'fraction':
+         correlation_coefficient, p_value = pearsonr(SR, D_vals)
+         print(correlation_coefficient)
+         print(p_value)
+         fig.update_xaxes(title_text='Species richness fraction', title_font=latex_font)
+    return fig, SR, D_vals
 
 follow_up_list_last = [np.array(rel_abund_rarefied_180_appear_4[0, :]),
                        np.array(rel_abund_rarefied_180_appear_4[1, :]),
@@ -98,11 +104,13 @@ follow_up_list_last = [np.array(rel_abund_rarefied_180_appear_4[0, :]),
 
 # Create the correlation plots
 fig_10 = correlation_plot_recovery(baseline_rel_abund_rarefied_appear_4, rel_abund_rarefied_4,
-                                   follow_up_list_last, change=False)
+                                   follow_up_list_last, method='change')
 fig_11 = correlation_plot_recovery(baseline_rel_abund_rarefied_appear_4, rel_abund_rarefied_4,
-                                   follow_up_list_last, change=True)
+                                   follow_up_list_last, method='richness')
 fig_12 = correlation_plot_recovery(baseline_rel_abund_rarefied_appear_4, rel_abund_rarefied_4,
-                                   follow_up_list_last, change=True, survived=True)
+                                   follow_up_list_last, method='survived')
+fig_13, SR, D_vals = correlation_plot_recovery(baseline_rel_abund_rarefied_appear_4, rel_abund_rarefied_4,
+                                   follow_up_list_last, method='fraction')
 
 # Calculate lists of the species richness at baseline, follow-up and ABX
 num_species_base_recovery = [species_richness(smp) for smp in baseline_rel_abund_rarefied_appear_4]

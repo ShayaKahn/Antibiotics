@@ -201,10 +201,10 @@ num_species_ABX_effects = [species_richness(smp) for smp in ABX]
 import os
 os.chdir(r'C:\Users\shaya\OneDrive\Desktop\Antibiotics project\Effects of different amoxicillin\Data')
 
-df_num_species_base_recovery = pd.DataFrame({'Species richness': num_species_base_effects })
-df_num_species_follow_recovery = pd.DataFrame({'Species richness': num_species_follow_effects })
-df_num_species_ABX_recovery = pd.DataFrame({'Species richness': num_species_ABX_effects })
+df_num_species_base_effects = pd.DataFrame({'Species richness': num_species_base_effects})
+df_num_species_follow_effects = pd.DataFrame({'Species richness': num_species_follow_effects})
+df_num_species_ABX_effects = pd.DataFrame({'Species richness': num_species_ABX_effects})
 
-df_num_species_base_recovery.to_excel('num_species_base_effects.xlsx', index=False)
-df_num_species_follow_recovery.to_excel('num_species_follow_effects.xlsx', index=False)
-df_num_species_ABX_recovery.to_excel('num_species_ABX_effects.xlsx', index=False)
+df_num_species_base_effects.to_excel('num_species_base_effects.xlsx', index=False)
+df_num_species_follow_effects.to_excel('num_species_follow_effects.xlsx', index=False)
+df_num_species_ABX_effects.to_excel('num_species_ABX_effects.xlsx', index=False)

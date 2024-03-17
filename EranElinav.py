@@ -48,12 +48,17 @@ def create_recovery_plot(rJSD_vals_list, BC_vals_list, jaccard_vals_list,
                                title_font=dict(size=25), template="plotly_dark")
 
     # Set y-axis labels
-    latex_font = {"family": "serif", "size": 20, "color": "white"}
-    fig.update_yaxes(title_text='Jaccard', row=1, col=1, title_font=latex_font)
-    fig.update_yaxes(title_text='Overlap', row=2, col=1, title_font=latex_font)
-    fig.update_yaxes(title_text='Bray Curtis', row=3, col=1, title_font=latex_font)
-    fig.update_yaxes(title_text='rJSD', row=4, col=1, title_font=latex_font)
-    fig.update_xaxes(title_text='Day', row=4, col=1, title_font=latex_font)
+    latex_font = {"family": "serif", "size": 40, "color": "white"}
+    fig.update_yaxes(title_text='Jaccard', row=1, col=1, title_font=latex_font,
+                     tickfont=dict(family='Times New Roman', size=25))
+    fig.update_yaxes(title_text='Overlap', row=2, col=1, title_font=latex_font,
+                     tickfont=dict(family='Times New Roman', size=25))
+    fig.update_yaxes(title_text='Bray Curtis', row=3, col=1, title_font=latex_font,
+                     tickfont=dict(family='Times New Roman', size=25))
+    fig.update_yaxes(title_text='rJSD', row=4, col=1, title_font=latex_font,
+                     tickfont=dict(family='Times New Roman', size=25))
+    fig.update_xaxes(title_text='Day', row=4, col=1, title_font=latex_font,
+                     tickfont=dict(family='Times New Roman', size=25))
 
     # Set x and y axes lines to black
     fig.update_xaxes(showline=True, linewidth=1, row=1, col=1, linecolor='white',
@@ -139,13 +144,15 @@ spo_7_labels = ['-13', '-12', '-11', '-10', '-9', '-8', '-7', '-6', '-5', '-4', 
 spo_1_recovery_comp = recovery(baseline_samples_list, spo_1_samples,
                                labels=spo_1_labels, title='Spontaneous 1 recovery', index=14)
 spo_2_recovery_comp = recovery(baseline_samples_list, spo_2_samples,
-                               labels=spo_2_labels, title='Spontaneous 2 recovery', index=15)
+                               labels=spo_2_labels, title=' ',#title='Spontaneous 2 recovery',
+                               index=15)
 spo_3_recovery_comp = recovery(baseline_samples_list, spo_3_samples,
                                labels=spo_3_labels, title='Spontaneous 3 recovery', index=16)
 spo_4_recovery_comp = recovery(baseline_samples_list, spo_4_samples,
                                labels=spo_4_labels, title='Spontaneous 4 recovery', index=17)
 spo_5_recovery_comp = recovery(baseline_samples_list, spo_5_samples,
-                               labels=spo_5_labels, title='Spontaneous 5 recovery', index=18)
+                               labels=spo_5_labels, title=' ',#title='Spontaneous 5 recovery',
+                               index=18)
 spo_6_recovery_comp = recovery(baseline_samples_list, spo_6_samples,
                                labels=spo_6_labels, title='Spontaneous 6 recovery', index=19)
 spo_7_recovery_comp = recovery(baseline_samples_list, spo_7_samples,
@@ -171,13 +178,17 @@ def heatmap_from_distance_matrix(matrix, title=None, labels=None, similarity=Fal
             [0.75, 'palegreen'],
             [1, 'white']
         ],
+        colorbar=dict(
+            tickfont=dict(size=25)
+        ),
         showscale=True
     ))
 
     # Update the layout
     fig.update_layout(
-        xaxis=dict(ticks='', side='top'),
-        yaxis=dict(ticks='', side='left', autorange='reversed'),
+        xaxis=dict(ticks='', side='top', tickfont=dict(family='Times New Roman', size=30)),
+        yaxis=dict(ticks='', side='left', autorange='reversed',
+                   tickfont=dict(family='Times New Roman', size=30)),
         width=800,
         height=800,
         template="plotly_dark",
@@ -193,7 +204,7 @@ spo_1_heatmap_time_bc = heatmap_from_distance_matrix(spo_1_pairwise_matrix_bc,
                                                      labels=spo_1_labels)
 spo_2_pairwise_matrix_bc = Pairwise(spo_2_samples).create_pairwise_matrix()
 spo_2_heatmap_time_bc = heatmap_from_distance_matrix(spo_2_pairwise_matrix_bc,
-                                                     title='Spontaneous 2 Bray Curtis',
+                                                     title=' ',#title='Spontaneous 2 Bray Curtis',
                                                      labels=spo_2_labels)
 spo_3_pairwise_matrix_bc = Pairwise(spo_3_samples).create_pairwise_matrix()
 spo_3_heatmap_time_bc = heatmap_from_distance_matrix(spo_3_pairwise_matrix_bc,
@@ -205,7 +216,7 @@ spo_4_heatmap_time_bc = heatmap_from_distance_matrix(spo_4_pairwise_matrix_bc,
                                                      labels=spo_4_labels)
 spo_5_pairwise_matrix_bc = Pairwise(spo_5_samples).create_pairwise_matrix()
 spo_5_heatmap_time_bc = heatmap_from_distance_matrix(spo_5_pairwise_matrix_bc,
-                                                     title='Spontaneous 5 Bray Curtis',
+                                                     title=' ',#title='Spontaneous 5 Bray Curtis',
                                                      labels=spo_5_labels)
 spo_6_pairwise_matrix_bc = Pairwise(spo_6_samples).create_pairwise_matrix()
 spo_6_heatmap_time_bc = heatmap_from_distance_matrix(spo_6_pairwise_matrix_bc,
@@ -279,7 +290,7 @@ def mean_sample(baseline_cohort):
 
 # Correlation plot function
 def correlation_plot(baseline_samples_list, ABX_list, follow_up_list, baseline_cohort,
-                     samples, metric='braycurtis', delta=True, method='optimal', change=False):
+                     samples, metric='braycurtis', method='optimal', delta=True, measure='fraction'):
     """
     baseline_samples_list: list of numpy matrices, each matrix contains in rows the baseline samples
                            of the subject
@@ -318,16 +329,22 @@ def correlation_plot(baseline_samples_list, ABX_list, follow_up_list, baseline_c
             follow_to_baseline_distance = np.mean([np.mean([calc_distance(follow_sample,
                                                                           base) for base in opt]
                                                            ) for follow_sample in follow])
+
+        ########################
         if delta:
             Delta_D_vals.append(follow_to_baseline_distance - char_baseline_distance)
         else:
             Delta_D_vals.append(follow_to_baseline_distance)
 
-        if change:
+        if measure == 'change':
             SR.append(species_richness(abx) - np.mean(
                 [species_richness(base_smp) for base_smp in base]))
-        else:
+        elif measure == 'fraction':
+            SR.append(np.divide(species_richness(abx), np.mean([species_richness(
+                base_smp) for base_smp in base])))
+        elif measure == 'richness':
             SR.append(species_richness(abx))
+        #######################
 
     latex_font = {"family": "serif", "size": 30, "color": "black"}
     fig = go.Figure(data=go.Scatter(x=SR, y=Delta_D_vals, mode='markers', marker=dict(size=20)))
@@ -341,81 +358,62 @@ def correlation_plot(baseline_samples_list, ABX_list, follow_up_list, baseline_c
         fig.update_yaxes(title_text='Δ Bray Curtis', title_font=latex_font)
     else:
         fig.update_yaxes(title_text='Bray Curtis', title_font=latex_font)
-    if change:
+    if measure == 'change':
         fig.update_xaxes(title_text='Δ Species richness', title_font=latex_font)
-    else:
+    elif measure == 'fraction':
+        fig.update_xaxes(title_text='Species richness fraction at ABX state', title_font=latex_font)
+    elif measure == 'richness':
         fig.update_xaxes(title_text='Species richness at ABX state', title_font=latex_font)
 
-    return fig
+    return fig, SR, Delta_D_vals
 
 # Create correlation plots
 
 last = 3
 spo_days_after_ABX_list_last = [mat[-last:] for mat in spo_days_after_ABX_list]
 
-fig_1 = correlation_plot(baseline_samples_list=base_sam_spo_list,
+fig = correlation_plot(baseline_samples_list=base_sam_spo_list,
                          ABX_list=list(ABX_cohort[14:, :]),
                          follow_up_list=spo_days_after_ABX_list_last,
                          baseline_cohort=baseline_cohort[14:, :],
                          samples=total_spo_samples,
                          metric='braycurtis', delta=False,
-                         method='mean', change=False)
+                         method='mean', measure='fraction')
 fig_2 = correlation_plot(baseline_samples_list=base_sam_spo_list,
                          ABX_list=list(ABX_cohort[14:, :]),
                          follow_up_list=spo_days_after_ABX_list_last,
                          baseline_cohort=baseline_cohort[14:, :],
                          samples=total_spo_samples,
                          metric='braycurtis', delta=False,
-                         method='optimal', change=False)
+                         method='optimal', measure='fraction')
 fig_3 = correlation_plot(baseline_samples_list=base_sam_spo_list,
                          ABX_list=list(ABX_cohort[14:, :]),
                          follow_up_list=spo_days_after_ABX_list_last,
                          baseline_cohort=baseline_cohort[14:, :],
                          samples=total_spo_samples,
                          metric='braycurtis', delta=False,
-                         method='cm', change=False)
+                         method='cm', measure='fraction')
 fig_4 = correlation_plot(baseline_samples_list=base_sam_spo_list,
                          ABX_list=list(ABX_cohort[14:, :]),
                          follow_up_list=spo_days_after_ABX_list_last,
                          baseline_cohort=baseline_cohort[14:, :],
                          samples=total_spo_samples,
                          metric='braycurtis', delta=True,
-                         method='mean', change=False)
+                         method='mean', measure='fraction')
 fig_5 = correlation_plot(baseline_samples_list=base_sam_spo_list,
                          ABX_list=list(ABX_cohort[14:, :]),
                          follow_up_list=spo_days_after_ABX_list_last,
                          baseline_cohort=baseline_cohort[14:, :],
                          samples=total_spo_samples,
                          metric='braycurtis', delta=True,
-                         method='optimal', change=False)
-fig_6 = correlation_plot(baseline_samples_list=base_sam_spo_list,
+                         method='optimal', measure='fraction')
+fig_6, SR, Delta_D_vals = correlation_plot(baseline_samples_list=base_sam_spo_list,
                          ABX_list=list(ABX_cohort[14:, :]),
                          follow_up_list=spo_days_after_ABX_list_last,
                          baseline_cohort=baseline_cohort[14:, :],
                          samples=total_spo_samples,
                          metric='braycurtis', delta=True,
-                         method='cm', change=False)
-fig_7 = correlation_plot(baseline_samples_list=base_sam_spo_list,
-                         ABX_list=list(ABX_cohort[14:, :]),
-                         follow_up_list=spo_days_after_ABX_list_last,
-                         baseline_cohort=baseline_cohort[14:, :],
-                         samples=total_spo_samples,
-                         metric='braycurtis', delta=True,
-                         method='mean', change=True)
-fig_8 = correlation_plot(baseline_samples_list=base_sam_spo_list,
-                         ABX_list=list(ABX_cohort[14:, :]),
-                         follow_up_list=spo_days_after_ABX_list_last,
-                         baseline_cohort=baseline_cohort[14:, :],
-                         samples=total_spo_samples,
-                         metric='braycurtis', delta=True,
-                         method='optimal', change=True)
-fig_9 = correlation_plot(baseline_samples_list=base_sam_spo_list,
-                         ABX_list=list(ABX_cohort[14:, :]),
-                         follow_up_list=spo_days_after_ABX_list_last,
-                         baseline_cohort=baseline_cohort[14:, :],
-                         samples=total_spo_samples,
-                         metric='braycurtis', delta=True,
-                         method='cm', change=True)
+                         method='cm', measure='fraction')
 
 # Correlation plot function for Survived species
 def correlation_plot_Survived_species(baseline_samples_list, ABX_list, follow_up_list, baseline_cohort,

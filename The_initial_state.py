@@ -35,3 +35,20 @@ follow_up = [total_cohort[2, :], total_cohort[5, :], total_cohort[8, :], total_c
 fig_1 = correlation_plot_recovery(baseline, ABX, follow_up, change=False)
 fig_2 = correlation_plot_recovery(baseline, ABX, follow_up, change=True)
 fig_3 = correlation_plot_recovery(baseline, ABX, follow_up, change=False, survived=True)
+
+# Calculate lists of the species richness at baseline, follow-up and ABX
+num_species_base_init = [species_richness(smp) for smp in baseline]
+num_species_follow_init = [species_richness(smp) for smp in follow_up]
+num_species_ABX_init = [species_richness(smp) for smp in ABX]
+
+# Save the lists
+import os
+os.chdir(r'C:\Users\shaya\OneDrive\Desktop\Antibiotics project\The initial state\Data')
+
+df_num_species_base_init = pd.DataFrame({'Species richness': num_species_base_init})
+df_num_species_follow_init = pd.DataFrame({'Species richness': num_species_follow_init})
+df_num_species_ABX_init = pd.DataFrame({'Species richness': num_species_ABX_init})
+
+df_num_species_base_init.to_excel('num_species_base_init.xlsx', index=False)
+df_num_species_follow_init.to_excel('num_species_follow_init.xlsx', index=False)
+df_num_species_ABX_init.to_excel('num_species_ABX_init.xlsx', index=False)

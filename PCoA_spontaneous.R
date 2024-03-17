@@ -102,32 +102,6 @@ colors_spo_7[131:137] <- "red"
 colors_spo_7[138:143] <- "blue"
 colors_spo_7[144:148] <- "blue"
 
-#create_custom_plot <- function(coordinates, colors, title = NULL) {
-#  
-#  data_df <- data.frame(PCoA1 = coordinates[, 1],
-#                        PCoA2 = coordinates[, 2], CustomColor = colors)
-#  
-#  p <- ggplot(data_df, aes(x = PCoA1, y = PCoA2, color = CustomColor)) +
-#    geom_point(size = 3) +
-#    geom_point(data = subset(data_df, CustomColor == "black"),
-#               aes(color = "black"), size = 2, shape = 21, fill = NA) +
-#    xlab("PCoA1") +
-#    ylab("PCoA2") +
-#    scale_color_identity() +
-#    theme_minimal() +
-#    theme(panel.background = element_rect(fill = "white", color = "black"),
-#          panel.grid = element_blank())
-#  
-#  p <- p + stat_ellipse(data = subset(data_df, CustomColor == "black"),
-#                        aes(group = CustomColor), type = "norm", level = 0.95)
-#  
-#  if (!is.null(title)) {
-#    p <- p + ggtitle(title)
-#  }
-#  
-#  return(p)
-#}
-
 create_custom_plot <- function(coordinates, colors, m, title = NULL) {
   
   data_df <- data.frame(PCoA1 = coordinates[, 1],
@@ -137,8 +111,8 @@ create_custom_plot <- function(coordinates, colors, m, title = NULL) {
     geom_point(size = 3, alpha = 0.6, shape = 16) +  # Set alpha and shape for transparency and filled points
     geom_point(data = subset(data_df, CustomColor == "green"),
                aes(color = "green"), size = 3, , alpha = 0.6, shape = 16, fill = NA) +
-    xlab("PCoA1") +
-    ylab("PCoA2") +
+    xlab("PCo1") +
+    ylab("PCo2") +
     scale_color_identity() +
     theme_minimal() +
     theme(panel.background = element_rect(fill = "white", color = "black"),
@@ -174,15 +148,17 @@ create_custom_plot <- function(coordinates, colors, m, title = NULL) {
   return(p)
 }
 
-p1 = create_custom_plot(coordinates_spo_1, colors_spo_1, 18, 'Spontaneous 1')
-p2 = create_custom_plot(coordinates_spo_2, colors_spo_2, 23, 'Spontaneous 2')
-p3 = create_custom_plot(coordinates_spo_3, colors_spo_3, 22, 'Spontaneous 3')
-p4 = create_custom_plot(coordinates_spo_4, colors_spo_4, 19, 'Spontaneous 4')
-p5 = create_custom_plot(coordinates_spo_5, colors_spo_5, 22, 'Spontaneous 5')
-p6 = create_custom_plot(coordinates_spo_6, colors_spo_6, 17, 'Spontaneous 6')
-p7 = create_custom_plot(coordinates_spo_7, colors_spo_7, 18, 'Spontaneous 7')
+#p1 = create_custom_plot(coordinates_spo_1, colors_spo_1, 18, 'Spontaneous 1')
+p2 = create_custom_plot(coordinates_spo_2, colors_spo_2, 23, 'Subject #2')
+p3 = create_custom_plot(coordinates_spo_3, colors_spo_3, 22, 'Subject #3')
+p4 = create_custom_plot(coordinates_spo_4, colors_spo_4, 19, 'Subject #4')
+p5 = create_custom_plot(coordinates_spo_5, colors_spo_5, 22, 'Subject #5')
+#p6 = create_custom_plot(coordinates_spo_6, colors_spo_6, 17, 'Spontaneous 6')
+#p7 = create_custom_plot(coordinates_spo_7, colors_spo_7, 18, 'Spontaneous 7')
 
-grid.arrange(p1, p2, p3, p4, p5, p6, p7, ncol = 4, nrow = 2)
+#grid.arrange(p1, p2, p3, p4, p5, p6, p7, ncol = 4, nrow = 2)
+
+grid.arrange(p2, p3, p4, p5, ncol = 2, nrow = 2)
 
 
 

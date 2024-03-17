@@ -7,7 +7,7 @@ class Rarify:
         :param df: dataframe, represents OTU table with samples as columns and OTUs as rows,
                    the values are the counts (integers)
         :param depth: int, the number of reads to be sampled from each sample, if None,
-                      the minimum number of reads is the default.
+                      the minimum number of reads is the default.the number of reads to be sampled from each sample
         """
         if not isinstance(df, pd.DataFrame):
             raise TypeError("The input object is not a DataFrame.")

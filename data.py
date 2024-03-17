@@ -7,7 +7,6 @@ import warnings
 from optimal import OptimalCohort
 warnings.filterwarnings("ignore", category=UserWarning)
 
-
 def normalize_cohort(cohort):
     # normalization function
     if cohort.ndim == 1:
@@ -976,3 +975,11 @@ subject_12_samples = np.vstack([rel_abund_rarefied_4[8, :], rel_abund_rarefied_8
                                 rel_abund_rarefied_42_appear_4[8, :], rel_abund_rarefied_180_appear_4[8, :]])
 
 subject_12_samples = normalize_cohort(subject_12_samples)
+
+Spo_ABX_cohort = ABX_cohort[14:, :]
+
+Spo_baseline_cohort = baseline_cohort[14:, :]
+
+Spo_post_ABX_cohort = np.vstack([spo_1_D_after_ABX[-1, :], spo_2_D_after_ABX[-1, :], spo_3_D_after_ABX[-1, :],
+                                 spo_4_D_after_ABX[-1, :], spo_5_D_after_ABX[-1, :], spo_6_D_after_ABX[-1, :],
+                                 spo_7_D_after_ABX[-1, :]])
