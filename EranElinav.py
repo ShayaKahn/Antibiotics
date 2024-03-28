@@ -1,5 +1,5 @@
 import os
-os.chdir(r'C:\Users\shaya\OneDrive\Desktop\Antibiotics_project')
+os.chdir(r'C:\Users\USER\Desktop\Antibiotics')
 import plotly.graph_objects as go
 from data import *
 from plotly.subplots import make_subplots
@@ -516,7 +516,7 @@ num_species_ABX = [species_richness(smp) for smp in list(ABX_cohort[14:, :])]
 
 # Save the lists
 import os
-os.chdir(r'C:\Users\shaya\OneDrive\Desktop\Antibiotics project\Eran Elinav\Data')
+os.chdir(r'C:\Users\USER\Desktop\Antibiotics\Eran Elinav\Data')
 
 df_num_species_base = pd.DataFrame({'Species richness': num_species_base})
 df_num_species_follow = pd.DataFrame({'Species richness': num_species_follow})

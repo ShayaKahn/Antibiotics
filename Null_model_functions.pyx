@@ -44,7 +44,7 @@ def create_shuffled_samples(int num_reals, cnp.ndarray[cnp.float64_t, ndim=1] te
     index_to_remove_set = set(index_to_remove)
 
     pool = np.array([pool[i] for i in range(len(pool)) if i not in index_to_remove_set])
-    cdef cnp.ndarray[cnp.int64_t, ndim=1] index
+    #cdef cnp.ndarray[cnp.int64_t, ndim=1] index
     cdef int counter
     cdef cnp.ndarray[cnp.float64_t, ndim=1] pool_copy
     cdef cnp.ndarray[cnp.int64_t, ndim=1] pool_indices_copy

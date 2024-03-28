@@ -1,10 +1,9 @@
 import os
-os.chdir(r'C:\Users\shaya\OneDrive\Desktop\Antibiotics project\Eran Elinav\Data')
 import pandas as pd
 import numpy as np
-from subject import Subject
+from Data_manipulation.subject import Subject
 import warnings
-from optimal import OptimalCohort
+from Data_manipulation.optimal import OptimalCohort
 warnings.filterwarnings("ignore", category=UserWarning)
 
 def normalize_cohort(cohort):
@@ -25,6 +24,7 @@ def filter_data(df):
 
 ### Post-Antibiotic Gut Mucosal Microbiome Reconstitution Is Impaired by Probiotics and Improved by Autologous FMT ###
 
+os.chdir(r"C:\Users\USER\Desktop\Antibiotics\Eran Elinav\Data")
 df = pd.read_excel('Metaphlan_stool.xlsx')
 Species_column = df[df.columns[0]]
 Species = np.array(list(Species_column))
@@ -861,7 +861,7 @@ spo_days_after_ABX_list = [spo_1_D_after_ABX, spo_2_D_after_ABX, spo_3_D_after_A
 
 
 ### Recovery of gut microbiota of healthy adults following antibiotic exposure ###
-os.chdir(r'C:\Users\shaya\OneDrive\Desktop\Antibiotics project\Recovery\Data')
+os.chdir(r"C:\Users\USER\Desktop\Antibiotics\Recovery\Data")
 
 rel_abund_rarefied = pd.read_csv('annotated.mOTU.rel_abund.rarefied.tsv', sep='\t')
 
@@ -983,3 +983,116 @@ Spo_baseline_cohort = baseline_cohort[14:, :]
 Spo_post_ABX_cohort = np.vstack([spo_1_D_after_ABX[-1, :], spo_2_D_after_ABX[-1, :], spo_3_D_after_ABX[-1, :],
                                  spo_4_D_after_ABX[-1, :], spo_5_D_after_ABX[-1, :], spo_6_D_after_ABX[-1, :],
                                  spo_7_D_after_ABX[-1, :]])
+
+#### Gut Bacterial Microbiota and its Resistome Rapidly Recover to Basal State Levels after Short-term ###
+
+os.chdir(r'C:\Users\USER\Desktop\Antibiotics project\Gut\Data')
+data = pd.read_excel('Gut_Bacterial_Microbiota_OTU_table.xlsx')
+import plotly.graph_objects as go
+from EranElinav import normalize_cohort, calc_distance, num_survived_species, species_richness
+import openpyxl
+
+
+def split_dataframe_by_column_name(df):
+    # Get columns containing the letter 'A'
+    columns_A = [col for col in df.columns if 'A' in col]
+    df_A = df[columns_A]
+
+    # Get columns containing the letter 'B'
+    columns_B = [col for col in df.columns if 'B' in col]
+    df_B = df[columns_B]
+
+    return df_A, df_B
+
+def plot_column_sums_histogram(df, title):
+    # Calculate the sums of the columns
+    column_sums = df.sum(axis=0)
+
+    # Create the histogram
+    fig = go.Figure(data=[go.Histogram(x=column_sums)])
+
+    # Update layout for better visualization
+    fig.update_layout(
+        title=title,
+        xaxis_title='Frequency per sample',
+        yaxis_title='Number of samples',
+        template='plotly_dark',
+        width=600,
+        height=600,
+        font=dict(family='Computer Modern', size=14, color='white'),
+        xaxis_showgrid=False,
+        yaxis_showgrid=False
+    )
+
+    return fig
+
+placebo_data, probiotics_data = split_dataframe_by_column_name(data)
+
+col_sums_plot = plot_column_sums_histogram(placebo_data, title='Placebo')
+#col_sums_plot.show()
+
+from Data_manipulation.rarify import Rarify
+placebo_data = Rarify(placebo_data).rarify()
+
+def custom_sort(col_name):
+    # Remove the '-' and the following letter at the end
+    col_name = col_name.split('-')[0]
+
+    # Split the cleaned column name by 'v' and convert the parts to integers
+    num1, num2 = map(int, col_name.split('v'))
+    return (num1, num2)
+
+def order_dataframe_columns(df):
+    # Sort the columns using the custom_sort function
+    sorted_columns = sorted(df.columns, key=custom_sort)
+    return df[sorted_columns]
+
+placebo_data = order_dataframe_columns(placebo_data)
+
+def split_to_visit(df):
+    df_v2 = pd.DataFrame()
+    df_v3 = pd.DataFrame()
+    df_v4 = pd.DataFrame()
+    df_v5 = pd.DataFrame()
+    for col_name in df.columns:
+        if 'v2' in col_name:
+            df_v2[col_name] = df[col_name]
+        elif 'v3' in col_name:
+            df_v3[col_name] = df[col_name]
+        elif 'v4' in col_name:
+            df_v4[col_name] = df[col_name]
+        else:
+            df_v5[col_name] = df[col_name]
+    return df_v2, df_v3, df_v4, df_v5
+
+placebo_data_v2, placebo_data_v3, placebo_data_v4, placebo_data_v5 = split_to_visit(placebo_data)
+
+#placebo_data_v2.to_excel('placebo_data_v2.xlsx', index=False)
+#placebo_data_v3.to_excel('placebo_data_v3.xlsx', index=False)
+#placebo_data_v4.to_excel('placebo_data_v4.xlsx', index=False)
+#placebo_data_v5.to_excel('placebo_data_v5.xlsx', index=False)
+
+placebo_data_v2 = placebo_data_v2.values.T
+placebo_data_v3 = placebo_data_v3.values.T
+placebo_data_v4 = placebo_data_v4.values.T
+placebo_data_v5 = placebo_data_v5.values.T
+
+placebo_data_v2 = normalize_cohort(placebo_data_v2)
+placebo_data_v3 = normalize_cohort(placebo_data_v3)
+placebo_data_v4 = normalize_cohort(placebo_data_v4)
+placebo_data_v5 = normalize_cohort(placebo_data_v5)
+
+#follow_up_list = [placebo_data_v5[0, :], placebo_data_v5[1, :], placebo_data_v5[2, :],
+#                  placebo_data_v5[3, :], placebo_data_v5[4, :], placebo_data_v5[5, :],
+#                  placebo_data_v5[6, :], placebo_data_v5[7, :], placebo_data_v5[8, :],
+#                  placebo_data_v5[9, :], placebo_data_v5[10, :], placebo_data_v5[11, :],
+#                  placebo_data_v5[12, :], placebo_data_v5[13, :], placebo_data_v5[14, :],
+#                  placebo_data_v5[15, :], placebo_data_v5[16, :], placebo_data_v5[17, :],
+#                  placebo_data_v5[18, :], placebo_data_v5[19, :], placebo_data_v5[20, :],
+#                  placebo_data_v5[21, :], placebo_data_v5[22, :], placebo_data_v5[23, :],
+#                  placebo_data_v5[24, :], placebo_data_v5[25, :], placebo_data_v5[26, :],
+#                  placebo_data_v5[27, :], placebo_data_v5[28, :], placebo_data_v5[29, :],
+#                  placebo_data_v5[30, :], placebo_data_v5[31, :], placebo_data_v5[32, :],
+#                  placebo_data_v5[33, :], placebo_data_v5[34, :]]
+
+follow_up_list = placebo_data_v5
