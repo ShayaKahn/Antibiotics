@@ -2,6 +2,7 @@ import numpy as np
 from scipy.stats import pearsonr
 from EranElinav import normalize_cohort, calc_distance, species_richness
 from data import *
+from Classes.shuffle_post_ABX import ShufflePostABX
 
 def num_survived_species_version_2(samples, threshold=0):
     # Stack the samples into a matrix using numpy's vstack
@@ -94,3 +95,7 @@ fig_1 = corr_graphs(placebo_data_v2, placebo_data_v3, follow_up_list, method='ch
 fig_2 = corr_graphs(placebo_data_v2, placebo_data_v3, follow_up_list, method='richness')
 fig_3 = corr_graphs(placebo_data_v2, placebo_data_v3, follow_up_list, method='survived')
 fig_4, SR, D_vals = corr_graphs(placebo_data_v2, placebo_data_v3, follow_up_list, method='fraction')
+
+shuffled_gut = ShufflePostABX(placebo_data_v2, placebo_data_v5).shuffled_state
+
+a = 1

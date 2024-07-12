@@ -5,9 +5,9 @@ library(ggplot2)
 library(gridExtra)
 
 # Load data
-data <- read_excel("C:/Users/USER/Desktop/Antibiotics/Eran Elinav/Data/spontaneous_combined.xlsx", col_names = FALSE)
+data <- read_excel("C:/Users/USER/OneDrive/Desktop/Antibiotics/Eran Elinav/Data/spontaneous_combined.xlsx", col_names = FALSE)
 
-data_abx_follow_up <- read.csv("C:/Users/USER/Desktop/Antibiotics/Eran Elinav/Data/total_abx_follow_up.csv", header = FALSE)
+data_abx_follow_up <- read.csv("C:/Users/USER/OneDrive/Desktop/Antibiotics/Eran Elinav/Data/total_abx_follow_up.csv", header = FALSE)
 
 data <- apply(data, 2, as.numeric)
 data_abx_follow_up <- apply(data_abx_follow_up, 2, as.numeric)
@@ -148,17 +148,17 @@ create_custom_plot <- function(coordinates, colors, m, title = NULL) {
   return(p)
 }
 
-#p1 = create_custom_plot(coordinates_spo_1, colors_spo_1, 18, 'Spontaneous 1')
-p2 = create_custom_plot(coordinates_spo_2, colors_spo_2, 23, 'Subject #2')
-p3 = create_custom_plot(coordinates_spo_3, colors_spo_3, 22, 'Subject #3')
-p4 = create_custom_plot(coordinates_spo_4, colors_spo_4, 19, 'Subject #4')
-p5 = create_custom_plot(coordinates_spo_5, colors_spo_5, 22, 'Subject #5')
-#p6 = create_custom_plot(coordinates_spo_6, colors_spo_6, 17, 'Spontaneous 6')
-#p7 = create_custom_plot(coordinates_spo_7, colors_spo_7, 18, 'Spontaneous 7')
+p1 = create_custom_plot(coordinates_spo_1, colors_spo_1, 18, 'Spontaneous #1')
+p2 = create_custom_plot(coordinates_spo_2, colors_spo_2, 23, 'Spontaneous #2')
+p3 = create_custom_plot(coordinates_spo_3, colors_spo_3, 22, 'Spontaneous #3')
+p4 = create_custom_plot(coordinates_spo_4, colors_spo_4, 19, 'Spontaneous #4')
+p5 = create_custom_plot(coordinates_spo_5, colors_spo_5, 22, 'Spontaneous #5')
+p6 = create_custom_plot(coordinates_spo_6, colors_spo_6, 17, 'Spontaneous #6')
+p7 = create_custom_plot(coordinates_spo_7, colors_spo_7, 18, 'Spontaneous #7')
 
-#grid.arrange(p1, p2, p3, p4, p5, p6, p7, ncol = 4, nrow = 2)
+grid.arrange(p1, p2, p3, p4, p5, p6, p7, ncol = 4, nrow = 2)
 
-grid.arrange(p2, p3, p4, p5, ncol = 2, nrow = 2)
+#grid.arrange(p5, ncol = 1, nrow = 1)
 
 
 

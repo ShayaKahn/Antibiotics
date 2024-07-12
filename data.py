@@ -24,7 +24,7 @@ def filter_data(df):
 
 ### Post-Antibiotic Gut Mucosal Microbiome Reconstitution Is Impaired by Probiotics and Improved by Autologous FMT ###
 
-os.chdir(r"C:\Users\USER\Desktop\Antibiotics\Eran Elinav\Data")
+os.chdir(r"C:\Users\USER\OneDrive\Desktop\Antibiotics\Eran Elinav\Data")
 df = pd.read_excel('Metaphlan_stool.xlsx')
 Species_column = df[df.columns[0]]
 Species = np.array(list(Species_column))
@@ -861,9 +861,10 @@ spo_days_after_ABX_list = [spo_1_D_after_ABX, spo_2_D_after_ABX, spo_3_D_after_A
 
 
 ### Recovery of gut microbiota of healthy adults following antibiotic exposure ###
-os.chdir(r"C:\Users\USER\Desktop\Antibiotics\Recovery\Data")
+os.chdir(r"C:\Users\USER\OneDrive\Desktop\Antibiotics\Recovery\Data")
 
-rel_abund_rarefied = pd.read_csv('annotated.mOTU.rel_abund.rarefied.tsv', sep='\t')
+#rel_abund_rarefied = pd.read_csv('annotated.mOTU.rel_abund.rarefied.tsv', sep='\t')
+rel_abund_rarefied = pd.read_csv('annotated.mOTU.rel_abund.tsv', sep='\t')
 
 rel_abund_rarefied = filter_data(rel_abund_rarefied)
 
@@ -984,14 +985,14 @@ Spo_post_ABX_cohort = np.vstack([spo_1_D_after_ABX[-1, :], spo_2_D_after_ABX[-1,
                                  spo_4_D_after_ABX[-1, :], spo_5_D_after_ABX[-1, :], spo_6_D_after_ABX[-1, :],
                                  spo_7_D_after_ABX[-1, :]])
 
+aFMT_post_ABX_cohort = np.vstack([aFMT_1_samples[-1, :], aFMT_2_samples[-1, :], aFMT_3_samples[-1, :],
+                                  aFMT_4_samples[-1, :], aFMT_5_samples[-1, :], aFMT_6_samples[-1, :]])
+
 #### Gut Bacterial Microbiota and its Resistome Rapidly Recover to Basal State Levels after Short-term ###
 
-os.chdir(r'C:\Users\USER\Desktop\Antibiotics project\Gut\Data')
+os.chdir(r'C:\Users\USER\OneDrive\Desktop\Antibiotics\Gut\Data')
 data = pd.read_excel('Gut_Bacterial_Microbiota_OTU_table.xlsx')
 import plotly.graph_objects as go
-from EranElinav import normalize_cohort, calc_distance, num_survived_species, species_richness
-import openpyxl
-
 
 def split_dataframe_by_column_name(df):
     # Get columns containing the letter 'A'

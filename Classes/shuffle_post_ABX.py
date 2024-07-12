@@ -1,6 +1,5 @@
 import numpy as np
-from Historical_contingency import HC
-
+from Classes.יhistorical_contingency import HC
 
 class ShufflePostABX(HC):
     """
@@ -19,6 +18,3 @@ class ShufflePostABX(HC):
                                             self.filtered_post_perturbed_state)):
             survived_matrix.append(np.where((abx != 0) & (post != 0))[0])
         return survived_matrix
-
-
-

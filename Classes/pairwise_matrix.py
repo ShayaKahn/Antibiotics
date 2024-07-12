@@ -1,5 +1,5 @@
 from scipy.spatial.distance import pdist, squareform
-from overlap import Overlap
+from Classes.overlap import Overlap
 import numpy as np
 
 class Pairwise:

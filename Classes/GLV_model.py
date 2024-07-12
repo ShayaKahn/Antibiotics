@@ -1,23 +1,24 @@
 import numpy as np
 from scipy.integrate import solve_ivp
-from GLV_functions import f, event
+from GLV_functions import f, g, event
+from dask import delayed, compute
+from dask.distributed import Client
 
 class Glv:
     """
     This class is responsible to solve the GLV model with verification of reaching the steady state
     for a given parameters.
     """
-    def __init__(self, n_samples, n_species, delta, r, s,
-                 interaction_matrix, initial_cond, final_time, max_step, normalize=True, method='RK45'):
+    def __init__(self, n_samples, n_species, delta, r, s, interaction_matrix, initial_cond, final_time, max_step,
+                 normalize=True, method='RK45', multiprocess=True):
         """
         :param n_samples: The number of samples you are need to compute.
         :param n_species: The number of species at each sample.
         :param delta: This parameter is responsible for the stop condition at the steady state.
-        :param r: growth rate vector of shape (,n_species).
-        :param s: logistic growth term vector of size (,n_species).
+        :param r: growth rate vector of shape (n_species,).
+        :param s: logistic growth term vector of size (n_species,).
         :param interaction_matrix: interaction matrix of shape (n_species, n_species).
-        :param initial_cond: set of initial conditions for each sample. If n_samples=1, the shape is (,n_species).
-        If n_samples=m for m!=1 so the shape is (n_species, n_samples)
+        :param initial_cond: set of initial conditions for each sample, the shape is (n_samples, n_species)
         :param final_time: the final time of the integration.
         :param max_step: maximal allowed step size.
         """
@@ -55,6 +56,9 @@ class Glv:
         if not (isinstance(max_step, (int, float)) and 0 < max_step < final_time):
             raise ValueError("max_step must be a number greater than zero and smaller than final_time.")
 
+        if not (isinstance(multiprocess, bool)):
+            raise ValueError("multiprocess must be of type bool.")
+
         self.smp = n_samples
         self.n = n_species
         self.delta = delta
@@ -66,6 +70,10 @@ class Glv:
         self.max_step = max_step
         self.normalize = normalize
         self.method = method
+        self.multiprocess = multiprocess
+
+        if self.multiprocess:
+            pass#self.client = Client(n_workers=10, threads_per_worker=1)
 
         # Initiation.
         self.Final_abundances = np.zeros((self.n, self.smp))
@@ -77,53 +85,64 @@ class Glv:
         """
 
         # Set the parameters to the functions f and event.
-        f_with_params = lambda t, x: f(t, x, self.r, self.s, self.A, self.delta)
+        #f_with_params = lambda t, x: f(t, x, self.r, self.s, self.A, self.delta)
+        f_with_params = lambda t, x: g(t, x, self.r, self.s, self.A, self.delta)
         event_with_params = lambda t, x: event(t, x, self.r, self.s, self.A, self.delta)
 
         # event definitions
         event_with_params.terminal = True
         event_with_params.direction = -1
 
-        if self.smp > 1:  # Solution for cohort.
+        event_not_satisfied_ind = []
+
+        if self.multiprocess:
+
+            sol_objects = [self.solve_for_m(f_with_params, event_with_params, m) for m in range(self.smp)]
+            solutions = compute(*sol_objects)
+
+            for m, sol in enumerate(solutions):
+                #print(m)
+                self.Final_abundances[:, m] = sol.y[:, -1]
+                zero_ind = np.where(self.Final_abundances[:, m] < 0.0)
+                self.Final_abundances[:, m][zero_ind] = 0.0
+
+                if np.size(sol.t_events[0]) == 0:
+                    event_not_satisfied_ind.append(m)
+        else:
             for m in range(self.smp):
                 print(m)
                 # solve GLV up to time span.
-                sol = solve_ivp(f_with_params, (0, self.final_time), self.Y[:][m], max_step=self.max_step,
+                sol = solve_ivp(f_with_params, (0, self.final_time), self.Y[m, :], max_step=self.max_step,
                                 events=event_with_params, method=self.method)
 
-                if m % 30 == 0:
-                    import matplotlib.pyplot as plt
+                #if m % 10 == 0:
+                #    import matplotlib.pyplot as plt
 
-                    plt.plot(sol.t, sol.y.T)
-                    plt.show()
+                #    plt.plot(sol.t, sol.y.T)
+                #    plt.show()
 
-                if np.size(sol.t_events[0]) == 1:
-                    self.Final_abundances[:, m] = sol.y[:, -1]
-                    zero_ind = np.where(self.Final_abundances[:, m] < 0.0)
-                    self.Final_abundances[:, m][zero_ind] = 0.0
-                else:
-                    raise RuntimeError("The expected event did not occur during the integration.")
+                self.Final_abundances[:, m] = sol.y[:, -1]
+                zero_ind = np.where(self.Final_abundances[:, m] < 0.0)
+                self.Final_abundances[:, m][zero_ind] = 0.0
 
-            final_abundances = self.Final_abundances
-            if self.normalize:
-                return self.normalize_cohort(final_abundances.T)
-            else:
-                return final_abundances.T
+                if np.size(sol.t_events[0]) == 0:
+                    event_not_satisfied_ind.append(m)
 
-        else:  # Solution for single sample.
-            sol = solve_ivp(f, (0, self.final_time),
-                            self.Y[:], max_step=self.max_step, events=event)
-
-            if np.size(sol.t_events[0]) == 1:
-                self.Final_abundances_single_sample[:] = sol.y[:, -1]
-            else:
-                raise RuntimeError("The expected event did not occur during the integration.")
-
-        final_abundances = self.Final_abundances_single_sample
+        final_abundances = self.Final_abundances
         if self.normalize:
-            return self.normalize_cohort(final_abundances)
+            return self.normalize_cohort(final_abundances.T), event_not_satisfied_ind
         else:
-            return final_abundances
+            return final_abundances.T, event_not_satisfied_ind
+
+    @delayed
+    def solve_for_m(self, f_with_params, event_with_params,  m):
+        sol = solve_ivp(f_with_params, (0, self.final_time), self.Y[m, :], max_step=self.max_step,
+                        events=event_with_params, method=self.method)
+        return sol
+
+    def close_client(self):
+        if self.multiprocess:
+            pass#self.client.close()
 
     @staticmethod
     def normalize_cohort(cohort):

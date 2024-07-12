@@ -1,12 +1,14 @@
-import os
-os.chdir(r'C:\Users\USER\Desktop\Antibiotics')
+#import os
+#os.chdir(r'C:\Users\USER\Desktop\Antibiotics')
 import plotly.graph_objects as go
 from data import *
 from plotly.subplots import make_subplots
 import numpy as np
-from overlap import Overlap
+from Classes.overlap import Overlap
 from scipy.spatial.distance import braycurtis, jensenshannon
-from pairwaise_matrix import Pairwise
+from Classes.pairwise_matrix import Pairwise
+from Classes.Historical_contingency_real_data import HcRealData
+from scipy.stats import spearmanr, pearsonr, linregress
 
 # Define a function that plots the Bray Curtis, rJSD, Jaccard, and Overlap measures
 # of a time series data from a subject to the baseline of other issues and himself.
@@ -144,14 +146,14 @@ spo_7_labels = ['-13', '-12', '-11', '-10', '-9', '-8', '-7', '-6', '-5', '-4', 
 spo_1_recovery_comp = recovery(baseline_samples_list, spo_1_samples,
                                labels=spo_1_labels, title='Spontaneous 1 recovery', index=14)
 spo_2_recovery_comp = recovery(baseline_samples_list, spo_2_samples,
-                               labels=spo_2_labels, title=' ',#title='Spontaneous 2 recovery',
+                               labels=spo_2_labels, title='Spontaneous 2 recovery',
                                index=15)
 spo_3_recovery_comp = recovery(baseline_samples_list, spo_3_samples,
                                labels=spo_3_labels, title='Spontaneous 3 recovery', index=16)
 spo_4_recovery_comp = recovery(baseline_samples_list, spo_4_samples,
                                labels=spo_4_labels, title='Spontaneous 4 recovery', index=17)
 spo_5_recovery_comp = recovery(baseline_samples_list, spo_5_samples,
-                               labels=spo_5_labels, title=' ',#title='Spontaneous 5 recovery',
+                               labels=spo_5_labels, title='Spontaneous 5 recovery',
                                index=18)
 spo_6_recovery_comp = recovery(baseline_samples_list, spo_6_samples,
                                labels=spo_6_labels, title='Spontaneous 6 recovery', index=19)
@@ -201,31 +203,31 @@ def heatmap_from_distance_matrix(matrix, title=None, labels=None, similarity=Fal
 spo_1_pairwise_matrix_bc = Pairwise(spo_1_samples).create_pairwise_matrix()
 spo_1_heatmap_time_bc = heatmap_from_distance_matrix(spo_1_pairwise_matrix_bc,
                                                      title='Spontaneous 1 Bray Curtis',
-                                                     labels=spo_1_labels)
+                                                     labels=spo_1_labels).show()
 spo_2_pairwise_matrix_bc = Pairwise(spo_2_samples).create_pairwise_matrix()
 spo_2_heatmap_time_bc = heatmap_from_distance_matrix(spo_2_pairwise_matrix_bc,
-                                                     title=' ',#title='Spontaneous 2 Bray Curtis',
-                                                     labels=spo_2_labels)
+                                                     title='Spontaneous 2 Bray Curtis',
+                                                     labels=spo_2_labels).show()
 spo_3_pairwise_matrix_bc = Pairwise(spo_3_samples).create_pairwise_matrix()
 spo_3_heatmap_time_bc = heatmap_from_distance_matrix(spo_3_pairwise_matrix_bc,
                                                      title='Spontaneous 3 Bray Curtis',
-                                                     labels=spo_3_labels)
+                                                     labels=spo_3_labels).show()
 spo_4_pairwise_matrix_bc = Pairwise(spo_4_samples).create_pairwise_matrix()
 spo_4_heatmap_time_bc = heatmap_from_distance_matrix(spo_4_pairwise_matrix_bc,
                                                      title='Spontaneous 4 Bray Curtis',
-                                                     labels=spo_4_labels)
+                                                     labels=spo_4_labels).show()
 spo_5_pairwise_matrix_bc = Pairwise(spo_5_samples).create_pairwise_matrix()
 spo_5_heatmap_time_bc = heatmap_from_distance_matrix(spo_5_pairwise_matrix_bc,
-                                                     title=' ',#title='Spontaneous 5 Bray Curtis',
-                                                     labels=spo_5_labels)
+                                                     title='Spontaneous 5 Bray Curtis',
+                                                     labels=spo_5_labels).show()
 spo_6_pairwise_matrix_bc = Pairwise(spo_6_samples).create_pairwise_matrix()
 spo_6_heatmap_time_bc = heatmap_from_distance_matrix(spo_6_pairwise_matrix_bc,
                                                      title='Spontaneous 6 Bray Curtis',
-                                                     labels=spo_6_labels)
+                                                     labels=spo_6_labels).show()
 spo_7_pairwise_matrix_bc = Pairwise(spo_7_samples).create_pairwise_matrix()
 spo_7_heatmap_time_bc = heatmap_from_distance_matrix(spo_7_pairwise_matrix_bc,
                                                      title='Spontaneous 7 Bray Curtis',
-                                                     labels=spo_7_labels)
+                                                     labels=spo_7_labels).show()
 
 # Survived species function
 def num_survived_species(samples, threshold=0):

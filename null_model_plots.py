@@ -1,15 +1,14 @@
 from Classes.null_model import NullModel
 import plotly.graph_objects as go
 from data import *
-"""
-# null model for spontaneous 1
-spo_base = baseline_cohort[15, :]
-spo_base_sum = np.sum(spo_2_baseline, axis=0)
-spo_abx = ABX_cohort[15, :]
-spo_post = spo_2_samples[-1, :]
 
-spo_obj = NullModel(spo_base, spo_abx, spo_post, baseline_cohort, num_reals=1000,
-                    baseline_sample_sum=spo_base_sum, ABX_sample_sum=None, exclude_test=False)
+# null model for spontaneous 1
+spo_base = baseline_cohort[14, :]
+spo_base_sum = np.sum(spo_1_baseline, axis=0)
+spo_abx = ABX_cohort[14, :]
+spo_post = spo_1_samples[-1, :]
+
+spo_obj = NullModel(spo_base, spo_abx, spo_post, baseline_cohort, num_reals=1000)
 bc_real_spo, bc_shuffled_spo = spo_obj.distance(method='Bray Curtis')
 
 p_value = np.sum(bc_shuffled_spo <= bc_real_spo) / len(bc_shuffled_spo)
@@ -59,8 +58,8 @@ fig.update_layout(
 )
 
 fig.show()
-"""
 
+"""
 import time
 
 start_time = time.time()
@@ -138,7 +137,7 @@ fig.update_layout(
 
 fig.show()
 
-
+"""
 
 #import os
 #os.chdir(r'C:\Users\USER\Desktop\Antibiotics\Gut\Data')
